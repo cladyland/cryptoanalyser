@@ -3,10 +3,7 @@ package ua.com.javarush.vika_kovalenko.cryptoanalyser;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-
+import java.util.*;
 
 public class CaesarsCipher {
 
@@ -72,7 +69,7 @@ public class CaesarsCipher {
 
             String[] tempDecryptedWords = String.valueOf(tempDecrypt).split(" ");
             for (String word : tempDecryptedWords) {
-                if (commonWords().contains(word)) {
+                if (mostCommonWords().contains(word)) {
                     matchingWordsCount++;
                 }
             }
@@ -88,6 +85,17 @@ public class CaesarsCipher {
         } else {
             throw new FileProcessingException("Couldn't find key to text from file: " + Artifacts.getInputFilePath());
         }
+    }
+
+    public static void statisticalAnalysis() {
+        Optional<Map.Entry<Character, Integer>> maxEntry = symbolStatistics()
+                .entrySet()
+                .stream()
+                .max(Map.Entry.comparingByValue());
+
+        char probablySpace = maxEntry.orElseThrow().getKey();
+        cipherKey = Arrays.binarySearch(Alphabet.getALPHABET(), probablySpace);
+        decryption();
     }
 
     private static void caesarEncryptDecrypt(String argument) {
@@ -133,7 +141,7 @@ public class CaesarsCipher {
         return outputIndex;
     }
 
-    private static HashSet<String> commonWords() {
+    private static HashSet<String> mostCommonWords() {
         var hundredCommonWords = new HashSet<String>();
         try (var reader = new BufferedReader(new FileReader("most_common_words.txt"))) {
             for (int i = 0; i < 100; i++) {
@@ -145,4 +153,25 @@ public class CaesarsCipher {
         return hundredCommonWords;
     }
 
+    private static HashMap<Character, Integer> symbolStatistics() {
+        var symbolStatistics = new HashMap<Character, Integer>();
+        try (var reader = new BufferedReader(new FileReader(String.valueOf(INPUT_LINES)))) {
+            char[] buffer = new char[1000];
+            int symbolsAmount = reader.read(buffer);
+            for (int i = 0; i < symbolsAmount; i++) {
+                Character key = buffer[i];
+                int value;
+                if (symbolStatistics.containsKey(key)) {
+                    value = symbolStatistics.get(key) + 1;
+                    symbolStatistics.replace(key, value);
+                } else {
+                    value = 1;
+                    symbolStatistics.put(key, value);
+                }
+            }
+        } catch (IOException ex) {
+            throw new FileProcessingException("Error reading file: " + Artifacts.getInputFilePath());
+        }
+        return symbolStatistics;
+    }
 }
