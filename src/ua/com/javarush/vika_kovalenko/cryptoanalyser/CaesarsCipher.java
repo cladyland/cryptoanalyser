@@ -1,20 +1,27 @@
 package ua.com.javarush.vika_kovalenko.cryptoanalyser;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+
 
 public class CaesarsCipher {
 
     private static final int ALPHABET_LENGTH = Alphabet.getALPHABET().length;
     private static final List<String> INPUT_LINES = FileProcessing.getInputLines();
     private static final StringBuilder OUTPUT_LINES = new StringBuilder();
-    private static final int CIPHER_KEY = Artifacts.getCesarKey();
+    private static int cipherKey = Artifacts.getCesarKey();
+    private static int inputIndex;
+    private static int outputIndex;
 
     private CaesarsCipher() {
     }
 
     public static void encryption() {
-        if (CIPHER_KEY > 0) {
+        if (cipherKey > 0) {
             caesarEncryptDecrypt("encryptPositive");
         } else {
             caesarEncryptDecrypt("encryptNegative");
@@ -22,17 +29,68 @@ public class CaesarsCipher {
     }
 
     public static void decryption() {
-        if (CIPHER_KEY > 0) {
+        if (cipherKey > 0) {
             caesarEncryptDecrypt("decryptPositive");
         } else {
             caesarEncryptDecrypt("decryptNegative");
         }
     }
 
-    private static void caesarEncryptDecrypt(String argument) {
-        int inputIndex;
-        int outputIndex;
+    public static void bruteForce() {
+        char[] symbols;
+        if (INPUT_LINES.size() > 9) {
+            symbols = String.valueOf(INPUT_LINES.subList(0, 9)).toCharArray();
+        } else {
+            symbols = String.valueOf(INPUT_LINES).toCharArray();
+        }
 
+        int maxKey = Alphabet.getALPHABET().length - 1;
+        int probablyKey = 0;
+
+        for (int i = maxKey; i >= -maxKey; i--) {
+            var tempDecrypt = new StringBuilder();
+            int matchingWordsCount = 0;
+            if (i == 0) {
+                continue;
+            }
+            for (char symbol : symbols) {
+                if (symbol == '[' || symbol == ']') {
+                    continue;
+                }
+                cipherKey = i;
+                inputIndex = Arrays.binarySearch(Alphabet.getALPHABET(), symbol);
+                if (i > 0) {
+                    outputIndex = findOutputIndex("decryptPositive", inputIndex);
+                } else {
+                    outputIndex = findOutputIndex("decryptNegative", inputIndex);
+                }
+                if (outputIndex < 0) {
+                    break;
+                }
+                tempDecrypt.append(Alphabet.getALPHABET()[outputIndex]);
+            }
+
+            String[] tempDecryptedWords = String.valueOf(tempDecrypt).split(" ");
+            for (String word : tempDecryptedWords) {
+                if (commonWords().contains(word)) {
+                    matchingWordsCount++;
+                }
+            }
+            if (matchingWordsCount > 0) {
+                probablyKey = i;
+                break;
+            }
+        }
+
+        if (probablyKey != 0) {
+            Artifacts.setCesarKey(probablyKey);
+            decryption();
+        } else {
+            throw new FileProcessingException("Couldn't find key to text from file: " + Artifacts.getInputFilePath());
+        }
+    }
+
+    private static void caesarEncryptDecrypt(String argument) {
         for (String line : INPUT_LINES) {
             char[] temp = line.toCharArray();
 
@@ -46,26 +104,45 @@ public class CaesarsCipher {
                                                           "from file: " + Artifacts.getInputFilePath());
                     }
                 }
+                outputIndex = findOutputIndex(argument, inputIndex);
 
-                switch (argument) {
-                    case "encryptPositive", "decryptNegative" -> {
-                        outputIndex = inputIndex + Math.abs(CIPHER_KEY);
-                        if (outputIndex > ALPHABET_LENGTH - 1) {
-                            outputIndex -= ALPHABET_LENGTH;
-                        }
-                    }
-                    case "encryptNegative", "decryptPositive" -> {
-                        outputIndex = inputIndex - Math.abs(CIPHER_KEY);
-                        if (outputIndex < 0) {
-                            outputIndex += ALPHABET_LENGTH;
-                        }
-                    }
-                    default -> outputIndex = 0;
-                }
                 OUTPUT_LINES.append(Alphabet.getALPHABET()[outputIndex]);
             }
             OUTPUT_LINES.append("\n");
         }
         FileProcessing.writeLines(OUTPUT_LINES.toString());
     }
+
+    private static int findOutputIndex(String argument, int inputIndex) {
+        int outputIndex;
+        switch (argument) {
+            case "encryptPositive", "decryptNegative" -> {
+                outputIndex = inputIndex + Math.abs(cipherKey);
+                if (outputIndex > ALPHABET_LENGTH - 1) {
+                    outputIndex -= ALPHABET_LENGTH;
+                }
+            }
+            case "encryptNegative", "decryptPositive" -> {
+                outputIndex = inputIndex - Math.abs(cipherKey);
+                if (outputIndex < 0) {
+                    outputIndex += ALPHABET_LENGTH;
+                }
+            }
+            default -> outputIndex = 0;
+        }
+        return outputIndex;
+    }
+
+    private static HashSet<String> commonWords() {
+        var hundredCommonWords = new HashSet<String>();
+        try (var reader = new BufferedReader(new FileReader("most_common_words.txt"))) {
+            for (int i = 0; i < 100; i++) {
+                hundredCommonWords.add(reader.readLine());
+            }
+        } catch (IOException ex) {
+            throw new FileProcessingException("Error reading 'most_common_words.txt' file", ex);
+        }
+        return hundredCommonWords;
+    }
+
 }
