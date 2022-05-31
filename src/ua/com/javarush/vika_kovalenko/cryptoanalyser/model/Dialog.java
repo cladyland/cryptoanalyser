@@ -1,4 +1,7 @@
-package ua.com.javarush.vika_kovalenko.cryptoanalyser;
+package ua.com.javarush.vika_kovalenko.cryptoanalyser.model;
+
+import ua.com.javarush.vika_kovalenko.cryptoanalyser.files.CaesarsCipher;
+import ua.com.javarush.vika_kovalenko.cryptoanalyser.files.FileChecking;
 
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;

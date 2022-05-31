@@ -1,8 +1,6 @@
-package ua.com.javarush.vika_kovalenko.cryptoanalyser;
+package ua.com.javarush.vika_kovalenko.cryptoanalyser.exception;
 
 public class FileProcessingException extends RuntimeException {
-    public FileProcessingException() {
-    }
 
     public FileProcessingException(String message) {
         super(message);
