@@ -24,7 +24,7 @@ public class FileChecking {
         if (Artifacts.getInputFilePath() == null) {
             Artifacts.setInputFilePath(file.toPath());
         } else {
-            if (!file.exists() && filePath.endsWith(".txt")) {
+            if (!file.exists()) {
                 try {
                     Files.createFile(file.toPath());
                 } catch (IOException ex) {
