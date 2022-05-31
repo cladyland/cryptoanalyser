@@ -8,9 +8,9 @@ This program is for encrypting and decrypting text files using the [Caesar ciphe
 
 To launch the program:
 1. Download cryptoanalyser-v-0.0.1.jar file.
-2. Enter a command at the command prompt:
+2. Enter a command at the command prompt _(pre-navigate to the folder with the cryptoanalyser-v-0.0.1.jar file or use the absolute (full) path to the file)_:
 ```
-$ java -jar ./build/cryptoanalyser-v-0.0.1.jar
+java -jar cryptoanalyser-v-0.0.1.jar
 ```
 ## Limitation
 The program works exclusively with .txt files and only with the English alphabet (including punctuation characters).
