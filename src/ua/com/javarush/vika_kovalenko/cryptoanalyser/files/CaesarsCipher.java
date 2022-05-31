@@ -39,7 +39,8 @@ public class CaesarsCipher {
 
     public static void bruteForce() {
         char[] symbols;
-        if (INPUT_LINES.size() > 9) {
+        int numberOfLinesRequiredForVerification = 9;
+        if (INPUT_LINES.size() > numberOfLinesRequiredForVerification) {
             symbols = String.valueOf(INPUT_LINES.subList(0, 9)).toCharArray();
         } else {
             symbols = String.valueOf(INPUT_LINES).toCharArray();
