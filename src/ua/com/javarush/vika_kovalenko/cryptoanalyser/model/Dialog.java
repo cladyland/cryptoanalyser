@@ -27,15 +27,14 @@ public class Dialog {
     }
 
     public static void dialogWithUser() {
-        int mode;
+        int userMode;
         System.out.println(GREETINGS + "\n" + PROGRAM_MODES);
         while (true) {
             if (SCANNER.hasNextInt()) {
-                int userMode = SCANNER.nextInt();
+                userMode = SCANNER.nextInt();
                 if (userMode < 1 || userMode > 4) {
                     System.err.println(WRONG_MODE);
                 } else {
-                    mode = userMode;
                     SCANNER.nextLine();
                     break;
                 }
@@ -55,7 +54,7 @@ public class Dialog {
         System.out.println("Enter the file path in which you want to save the result:");
         isFile(preliminaryPathCheck());
 
-        if (mode <= 2) {
+        if (userMode <= 2) {
             System.out.println("Enter the cipher key:");
             int maxKeyValue = Alphabet.getALPHABET().length - 1;
             while (true) {
@@ -73,8 +72,9 @@ public class Dialog {
                 }
             }
         }
+        SCANNER.close();
         System.out.println("The process has begun...\n");
-        programMode(mode);
+        programMode(userMode);
         System.out.printf(FAREWELL, Artifacts.getOutputFilePath());
     }
 
@@ -82,7 +82,7 @@ public class Dialog {
         Path filePath;
         try {
             filePath = Path.of(SCANNER.nextLine());
-            if (!filePath.toString().endsWith(".txt")){
+            if (!filePath.toString().endsWith(".txt")) {
                 throw new IllegalArgumentException("The program works only with .txt files. The program terminates...");
             }
         } catch (InvalidPathException ex) {
