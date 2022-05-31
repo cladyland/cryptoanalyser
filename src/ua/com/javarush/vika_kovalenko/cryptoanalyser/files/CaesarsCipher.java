@@ -160,7 +160,7 @@ public class CaesarsCipher {
 
     private static HashMap<Character, Integer> symbolStatistics() {
         var symbolStatistics = new HashMap<Character, Integer>();
-        try (var reader = new BufferedReader(new FileReader(String.valueOf(INPUT_LINES)))) {
+        try (var reader = new BufferedReader(new FileReader(String.valueOf(Artifacts.getInputFilePath())))) {
             char[] buffer = new char[1000];
             int symbolsAmount = reader.read(buffer);
             for (int i = 0; i < symbolsAmount; i++) {
@@ -175,7 +175,7 @@ public class CaesarsCipher {
                 }
             }
         } catch (IOException ex) {
-            throw new FileProcessingException("Error reading file: " + Artifacts.getInputFilePath());
+            throw new FileProcessingException("Error reading file: " + Artifacts.getInputFilePath(), ex);
         }
         return symbolStatistics;
     }
