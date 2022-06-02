@@ -1,7 +1,7 @@
-package ua.com.javarush.vika_kovalenko.cryptoanalyser.files;
+package ua.com.javarush.kovalenko.vika.cryptoanalyser.files;
 
-import ua.com.javarush.vika_kovalenko.cryptoanalyser.model.Artifacts;
-import ua.com.javarush.vika_kovalenko.cryptoanalyser.exception.FileProcessingException;
+import ua.com.javarush.kovalenko.vika.cryptoanalyser.exception.FileProcessingException;
+import ua.com.javarush.kovalenko.vika.cryptoanalyser.model.Artifacts;
 
 import java.io.File;
 import java.io.IOException;

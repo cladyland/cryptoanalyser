@@ -1,4 +1,4 @@
-package ua.com.javarush.vika_kovalenko.cryptoanalyser.model;
+package ua.com.javarush.kovalenko.vika.cryptoanalyser.model;
 
 import java.nio.file.Path;
 

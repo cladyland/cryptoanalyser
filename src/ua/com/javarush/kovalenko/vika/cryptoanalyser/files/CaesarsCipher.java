@@ -1,8 +1,8 @@
-package ua.com.javarush.vika_kovalenko.cryptoanalyser.files;
+package ua.com.javarush.kovalenko.vika.cryptoanalyser.files;
 
-import ua.com.javarush.vika_kovalenko.cryptoanalyser.model.Alphabet;
-import ua.com.javarush.vika_kovalenko.cryptoanalyser.model.Artifacts;
-import ua.com.javarush.vika_kovalenko.cryptoanalyser.exception.FileProcessingException;
+import ua.com.javarush.kovalenko.vika.cryptoanalyser.exception.FileProcessingException;
+import ua.com.javarush.kovalenko.vika.cryptoanalyser.model.Alphabet;
+import ua.com.javarush.kovalenko.vika.cryptoanalyser.model.Artifacts;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -14,6 +14,10 @@ public class CaesarsCipher {
     private static final int ALPHABET_LENGTH = Alphabet.getALPHABET().length;
     private static final List<String> INPUT_LINES = FileProcessing.getInputLines();
     private static final StringBuilder OUTPUT_LINES = new StringBuilder();
+    private static final String ENCRYPT_POSITIVE = "encryptPositive";
+    private static final String ENCRYPT_NEGATIVE = "encryptNegative";
+    private static final String DECRYPT_POSITIVE = "decryptPositive";
+    private static final String DECRYPT_NEGATIVE = "decryptNegative";
     private static int cipherKey = Artifacts.getCesarKey();
     private static int inputIndex;
     private static int outputIndex;
@@ -23,17 +27,17 @@ public class CaesarsCipher {
 
     public static void encryption() {
         if (cipherKey > 0) {
-            caesarEncryptDecrypt("encryptPositive");
+            caesarEncryptDecrypt(ENCRYPT_POSITIVE);
         } else {
-            caesarEncryptDecrypt("encryptNegative");
+            caesarEncryptDecrypt(ENCRYPT_NEGATIVE);
         }
     }
 
     public static void decryption() {
         if (cipherKey > 0) {
-            caesarEncryptDecrypt("decryptPositive");
+            caesarEncryptDecrypt(DECRYPT_POSITIVE);
         } else {
-            caesarEncryptDecrypt("decryptNegative");
+            caesarEncryptDecrypt(DECRYPT_NEGATIVE);
         }
     }
 
@@ -62,9 +66,9 @@ public class CaesarsCipher {
                 cipherKey = i;
                 inputIndex = Arrays.binarySearch(Alphabet.getALPHABET(), symbol);
                 if (i > 0) {
-                    outputIndex = findOutputIndex("decryptPositive", inputIndex);
+                    outputIndex = findOutputIndex(DECRYPT_POSITIVE, inputIndex);
                 } else {
-                    outputIndex = findOutputIndex("decryptNegative", inputIndex);
+                    outputIndex = findOutputIndex(DECRYPT_NEGATIVE, inputIndex);
                 }
                 if (outputIndex < 0) {
                     break;
@@ -129,13 +133,13 @@ public class CaesarsCipher {
     private static int findOutputIndex(String argument, int inputIndex) {
         int outputIndex;
         switch (argument) {
-            case "encryptPositive", "decryptNegative" -> {
+            case ENCRYPT_POSITIVE, DECRYPT_NEGATIVE -> {
                 outputIndex = inputIndex + Math.abs(cipherKey);
                 if (outputIndex > ALPHABET_LENGTH - 1) {
                     outputIndex -= ALPHABET_LENGTH;
                 }
             }
-            case "encryptNegative", "decryptPositive" -> {
+            case ENCRYPT_NEGATIVE, DECRYPT_POSITIVE -> {
                 outputIndex = inputIndex - Math.abs(cipherKey);
                 if (outputIndex < 0) {
                     outputIndex += ALPHABET_LENGTH;
