@@ -3,7 +3,6 @@ package ua.com.javarush.kovalenko.vika.cryptoanalyser.model;
 import ua.com.javarush.kovalenko.vika.cryptoanalyser.files.CaesarsCipher;
 import ua.com.javarush.kovalenko.vika.cryptoanalyser.files.FileChecking;
 
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Scanner;
 
@@ -49,10 +48,10 @@ public class Dialog {
         }
 
         System.out.println("Enter the path to the file you want to process:");
-        isFile(preliminaryPathCheck());
+        isFile(FileChecking.preliminaryPathCheck(Path.of(SCANNER.nextLine())));
 
         System.out.println("Enter the file path in which you want to save the result:");
-        isFile(preliminaryPathCheck());
+        isFile(FileChecking.preliminaryPathCheck(Path.of(SCANNER.nextLine())));
 
         if (userMode <= 2) {
             System.out.println("Enter the cipher key:");
@@ -76,20 +75,6 @@ public class Dialog {
         System.out.println("The process has begun...\n");
         programMode(userMode);
         System.out.printf(FAREWELL, Artifacts.getOutputFilePath());
-    }
-
-    private static Path preliminaryPathCheck() {
-        Path filePath;
-        try {
-            filePath = Path.of(SCANNER.nextLine());
-            if (!filePath.toString().endsWith(".txt")) {
-                throw new IllegalArgumentException("The program works only with .txt files. The program terminates...");
-            }
-        } catch (InvalidPathException ex) {
-            throw new IllegalArgumentException("An invalid character was detected in the path! The program can no " +
-                                               "longer run.");
-        }
-        return filePath;
     }
 
     private static void isFile(Path filePath) {

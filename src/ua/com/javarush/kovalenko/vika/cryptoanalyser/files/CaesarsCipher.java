@@ -7,17 +7,23 @@ import ua.com.javarush.kovalenko.vika.cryptoanalyser.model.Artifacts;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class CaesarsCipher {
 
     private static final int ALPHABET_LENGTH = Alphabet.getALPHABET().length;
-    private static final List<String> INPUT_LINES = FileProcessing.getInputLines();
+    private static final List<String> INPUT_LINES = FileProcessing.getInputLines(Artifacts.getInputFilePath());
     private static final StringBuilder OUTPUT_LINES = new StringBuilder();
     private static final String ENCRYPT_POSITIVE = "encryptPositive";
     private static final String ENCRYPT_NEGATIVE = "encryptNegative";
     private static final String DECRYPT_POSITIVE = "decryptPositive";
     private static final String DECRYPT_NEGATIVE = "decryptNegative";
+    private static final String MOST_COMMON_WORDS = "most_common_words.txt";
     private static int cipherKey = Artifacts.getCesarKey();
     private static int inputIndex;
     private static int outputIndex;
@@ -127,7 +133,7 @@ public class CaesarsCipher {
             }
             OUTPUT_LINES.append("\n");
         }
-        FileProcessing.writeLines(OUTPUT_LINES.toString());
+        FileProcessing.writeLines(Artifacts.getOutputFilePath(), OUTPUT_LINES.toString());
     }
 
     private static int findOutputIndex(String argument, int inputIndex) {
@@ -152,12 +158,13 @@ public class CaesarsCipher {
 
     private static HashSet<String> mostCommonWords() {
         var hundredCommonWords = new HashSet<String>();
-        try (var reader = new BufferedReader(new FileReader("most_common_words.txt"))) {
-            for (int i = 0; i < 100; i++) {
+        try (var reader = new BufferedReader(new FileReader(MOST_COMMON_WORDS))) {
+            int hundredWords = 100;
+            for (int i = 0; i < hundredWords; i++) {
                 hundredCommonWords.add(reader.readLine());
             }
         } catch (IOException ex) {
-            throw new FileProcessingException("Error reading 'most_common_words.txt' file", ex);
+            throw new FileProcessingException("Error reading " + MOST_COMMON_WORDS + " file", ex);
         }
         return hundredCommonWords;
     }
