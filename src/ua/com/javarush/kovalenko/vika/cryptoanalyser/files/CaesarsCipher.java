@@ -48,6 +48,9 @@ public class CaesarsCipher {
     }
 
     public static void bruteForce() {
+        final char FIRST_ARRAY_SYMBOL = '[';
+        final char LAST_ARRAY_SYMBOL = ']';
+
         char[] symbols;
         int numberOfLinesRequiredForVerification = 9;
         if (INPUT_LINES.size() > numberOfLinesRequiredForVerification) {
@@ -66,7 +69,7 @@ public class CaesarsCipher {
                 continue;
             }
             for (char symbol : symbols) {
-                if (symbol == '[' || symbol == ']') {
+                if (symbol == FIRST_ARRAY_SYMBOL || symbol == LAST_ARRAY_SYMBOL) {
                     continue;
                 }
                 cipherKey = i;
@@ -115,9 +118,7 @@ public class CaesarsCipher {
 
     private static void caesarEncryptDecrypt(String argument) {
         for (String line : INPUT_LINES) {
-            char[] temp = line.toCharArray();
-
-            for (char letter : temp) {
+            for (char letter : line.toCharArray()) {
                 inputIndex = Arrays.binarySearch(Alphabet.getALPHABET(), letter);
                 if (inputIndex < 0) {
                     if (argument.startsWith("encrypt")) {
@@ -159,8 +160,8 @@ public class CaesarsCipher {
     private static HashSet<String> mostCommonWords() {
         var hundredCommonWords = new HashSet<String>();
         try (var reader = new BufferedReader(new FileReader(MOST_COMMON_WORDS))) {
-            int hundredWords = 100;
-            for (int i = 0; i < hundredWords; i++) {
+            int topHundredCommonWords = 100;
+            for (int i = 0; i < topHundredCommonWords; i++) {
                 hundredCommonWords.add(reader.readLine());
             }
         } catch (IOException ex) {

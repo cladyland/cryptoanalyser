@@ -3,6 +3,7 @@ package ua.com.javarush.kovalenko.vika.cryptoanalyser.model;
 import ua.com.javarush.kovalenko.vika.cryptoanalyser.files.CaesarsCipher;
 import ua.com.javarush.kovalenko.vika.cryptoanalyser.files.FileChecking;
 
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.Scanner;
 
@@ -19,8 +20,7 @@ public class Dialog {
             4 -> decryption using statistical text analysis
             exit -> end the program""";
     private static final String WRONG_MODE = "What do you want to do? Enter '1', '2', '3', '4' or 'exit'.";
-    private static final String WRONG_FILE_PATH = "Oh, no! You entered the wrong file path. The program will be " +
-                                                  "completed.";
+    private static final String WRONG_FILE_PATH = "Oh, no! You entered the wrong file path. Next file not found";
 
     private Dialog() {
     }
@@ -80,8 +80,7 @@ public class Dialog {
     private static void isFile(Path filePath) {
         var fileChecking = new FileChecking(filePath);
         if (!fileChecking.isValidFilePath()) {
-            System.err.println(WRONG_FILE_PATH);
-            System.exit(1);
+            throw new InvalidPathException(filePath.toString(), WRONG_FILE_PATH);
         }
     }
 
